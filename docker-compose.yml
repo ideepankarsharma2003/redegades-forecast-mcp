@@ -1,0 +1,33 @@
+services:
+  forecast-bootstrap:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    command: python scripts/init_dummy_db.py --orders 500 --parts 20
+    restart: "no"
+
+  forecast-cron:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    command: python -m mcp_service.scheduler
+    depends_on:
+      forecast-bootstrap:
+        condition: service_completed_successfully
+
+  forecast-api:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    command: uvicorn mcp_service.api:app --host 0.0.0.0 --port 8080
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      forecast-bootstrap:
+        condition: service_completed_successfully
