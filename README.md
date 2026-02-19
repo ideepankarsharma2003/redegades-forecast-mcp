@@ -142,6 +142,44 @@ This service blocks direct arbitrary SQL execution. Query requests must:
 2. Provide only expected parameters.
 3. Pass parameter filtering checks in `mcp_service/query_filter.py`.
 
+Current query payload contracts:
+
+- `ic_orders_lead_time_extract`
+  - required `params`: `start_date`
+  - optional `params`: `part_no`
+  - example:
+  ```json
+  {
+    "query_id": "ic_orders_lead_time_extract",
+    "params": { "start_date": "2024-01-01", "part_no": "PART-0001" },
+    "limit": 100
+  }
+  ```
+
+- `sales_monthly_history`
+  - required `params`: `start_date`
+  - optional `params`: `part_no`
+  - example:
+  ```json
+  {
+    "query_id": "sales_monthly_history",
+    "params": { "start_date": "2024-01-01" },
+    "limit": 100
+  }
+  ```
+
+- `precomputed_forecast_values`
+  - required `params`: `domain`, `series_key`
+  - optional `params`: none
+  - example:
+  ```json
+  {
+    "query_id": "precomputed_forecast_values",
+    "params": { "domain": "lead_time", "series_key": "__ALL__" },
+    "limit": 30
+  }
+  ```
+
 ## Forecasting Strategy
 
 ### Lead Time Forecasting
